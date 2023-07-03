@@ -1,123 +1,145 @@
-import React from 'react'
-import{
-  View,StyleSheet
-}from 'react-native'
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import React, {useState} from 'react';
 
-import Example from './src/Example';
-import Flexbox from './src/FlexBox';
+// import all the components we are going to use
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  TextInput,
+  Text,
+  TouchableOpacity,
+  TouchableHighlight,
+} from 'react-native';
 
 
-const Stack = createStackNavigator()
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const App = () => {
 
+  // To get the value from the TextInput
+  const [textInputValue, setTextInputValue] = useState('');
+  // To set the value on Text
+  const [getValue, setGetValue] = useState('');
+const [updateValue, setUpdateValue] = useState('')
+  const saveValueFunction = () => {
+    // Function to save the value in AsyncStorage
+    if (textInputValue) {
+      // To check the input not empty
+      AsyncStorage.setItem('a', textInputValue);
+      // Setting a data to a AsyncStorage with respect to a key
+      setTextInputValue('');
+      // Resetting the TextInput
+      alert('Data Saved');
+      // Alert to confirm
+    } 
+  };
 
-function MyStack()
-{
-  return(
-    <Stack.Navigator>
-   <Stack.Screen
-        name = 'Example'
-        component = {Example}
-        options = {{headerShown:false}}
+  const getValueFunction = () => {
+    // Function to get the value from AsyncStorage
+    AsyncStorage.getItem('a').then(
+      (value) =>
+        // AsyncStorage returns a promise
+        // Adding a callback to get the value
+        setGetValue(value),
+      // Setting the value in Text
+    );
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1,}}>
+      <View style={styles.container}>
+       
+        <TextInput 
+          placeholder="Enter Text "
+          value={textInputValue}
+          onChangeText={(data) => setTextInputValue(data)}
+          underlineColorAndroid="transparent"
+          style={styles.textInputStyle}
         />
-        <Stack.Screen
-          name ='Flexbox'
-          component={Flexbox}
-           options = {{headerShown:false}}
-           /> 
-           </Stack.Navigator>
-  )
-}
+        <TouchableOpacity
+          onPress={saveValueFunction}
+          style={styles.buttonStyle}>
+          <Text style={styles.buttonTextStyle}>
+           ADD
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={getValueFunction}
+          style={styles.buttonStyle1}>
+          <Text style={styles.buttonTextStyle}>
+            GET 
+          </Text>
+        </TouchableOpacity>
+        <Text style={styles.textStyle}>
+          {getValue}
+        </Text>
 
-export default function App(){
-  return(
-    <NavigationContainer>
-      <MyStack/>
-    </NavigationContainer>
-  )
-}
+       
 
+      </View>
+    </SafeAreaView>
+  );
+};
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 5,
+    backgroundColor: 'white',
+  },
+  titleText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingVertical: 20,
+  },
+  textStyle: {
+    padding: 10,
+    textAlign: 'center',
+    marginTop:50,
+    fontSize:20,
+    color:'black',
+    fontWeight:'bold'
 
+  },
+  buttonStyle: {
+    fontSize: 16,
+    color: 'white',
+    backgroundColor: 'green',
+    marginTop: 62,
+    marginLeft:80,
+    width:150,
+    height:40,
+    borderRadius:5
 
-// // import AsyncStorage from '@react-native-async-storage/async-storage';
-// // import { StatusBar } from 'expo-status-bar';
-// import React, { useState } from 'react';
-// import { StyleSheet, Text, View , Button ,StatusBar} from 'react-native';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// // import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
-// import axios from 'axios';
+  },
+  buttonStyle1: {
+    fontSize: 16,
+    color: 'white',
+    backgroundColor: 'green',
+    marginTop: 32,
+    marginLeft:80,
+    width:150,
+    height:40,
+    borderRadius:5
 
-//  function App() {
-// const [task,setTask] = useState("");
-//   const add = async() => {
-//     try{
-//       await AsyncStorage.setItem("dailyTask","Todays task");
+  },
+  
+  buttonTextStyle: {
+    padding: 5,
+    color: 'white',
+    textAlign: 'center',
+  },
+  textInputStyle: {
+    textAlign: 'center',
+    height: 40,
+    width: '50%',
+    borderWidth: 1,
+    borderColor: 'green',
+    marginTop:70,
+    marginLeft:70,
+    borderRadius:5
+  },
+});
 
-//     }catch(e){
-//       console.error(e);
-//     }
-//   }
-//   const fetchData = () => {
-//     axios.get("https://jsonplaceholder.typicode.com/users").then(response => console.log("response",response))
-//   }
-//   const get=async() =>{
-//     try{
-//      const value = await AsyncStorage.getItem("dailyTask");
-//       if(value != null){
-// setTask(value)
-//     }else {
-//       setTask("No Task")
-//     } 
-//   }
-//   catch (e){
-//     console.log(e)
-//   }
-//   }
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.textStyle}>{task}</Text>
-      
-
-// <View style={styles.button}>
-//     <Button 
-//     title="ADD"
-//     onPress={add}>
-//     </Button>
-// </View>
-
-// <View style={styles.button}>
-//     <Button 
-//     title="GET"
-//     onPress={get}>
-//     </Button>
-// </View>
-
-// <View style={styles.button}>
-//     <Button 
-//     title="Fetch API"
-//     onPress={() => fetchData()}>
-//     </Button>
-// </View>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   textStyle:{
-//     fontSize:40,
-//     marginBottom:30,
-//   },
-//   button:{
-//     margin:20,
-//     width:250
-//   }
-// });
+export default App;
